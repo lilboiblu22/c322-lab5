@@ -32,9 +32,15 @@
           },
           body: JSON.stringify(duck)
         };
-        let response = await fetch(host, + "/ducks", request);
-        if (response.stause == 200){
-          message = "The duck was added successfully";
+        let response = await fetch(host + "/ducks", request);
+        if (response.status == 200){
+        let result = await submitTheImage();
+        if (result){
+          message = "The duck was saved successfully"
+        }
+          else{
+            message = "Somethign went wrong! The Duck Data was saved successfully but the image was not!";
+          }
         }
         else{
           console.log(response);
@@ -42,6 +48,24 @@
         }
         alert(message);
       }
+
+
+      async function submitTheImage(){
+        let duckId = document.getElementById("id").value;
+        let imageInput = document.getElementById("imageInput");
+        let formData = new FormData();
+
+        formData.append("file", imageInput.files[0]);
+        let request = {
+          method: "POST",
+          body:formData
+        };
+        let response = await fetch(host + "/ducks/" + duckId + "/image", request);
+        let result = await response.json();
+        return result;
+      }
+
+
     </script>
   </body>
 </html>
